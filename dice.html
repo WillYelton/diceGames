@@ -1,0 +1,1055 @@
+<!doctype html>
+<html>
+<head>
+    <title>Dice Roller</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style>
+	#roll {
+		
+	}
+	#result {
+		border:1px solid grey;
+		width:100%;
+		margin-top: 50px;
+	}
+	h1 {
+		text-align: center;
+	}
+	.dice {
+		font-size:200%;
+		margin-right:20px;
+		display:none;
+	}
+	#alert {
+		display:none;
+	}
+	.inline1 {
+		display:inline-block;
+	}
+	.dice-info {
+		font-size:300%;
+		font-weight:bold;
+	}
+	#settings-button {
+		width:20%;
+		margin-top:50px;
+	}
+	#num-rolls-div {
+		display:none;
+	}
+	#num-dice-div {
+		display:none;
+	}
+	#alert-saved {
+		display:none;
+	}
+	#stats {
+		border: 1px solid grey;
+		width:100%;
+		margin-top: 50px;
+		display:none;
+	}
+	#average {
+		display: none;
+	}
+	#alert-stats {
+		display:none;
+		margin-bottom: 0;
+	}
+	#catan-checkbox-div {
+		display: none;
+	}
+	#farkle-checkbox-div {
+		display: none;
+	}
+	#farkle{
+		display:none;
+	}
+	.roll-button {
+		margin-top:50px;
+		width:79%;
+	}
+	.farkle-result {
+		border: 1px solid grey;
+		width: 15%;
+		height:85%;
+		float:left;
+		margin-right:5px;
+		font-size: 400%;
+		text-align: center;
+	}
+	#farkle-result-container {
+		margin-top: 20px;
+		width:100%;
+		height:100px;
+		display:none;
+	}
+	#select {
+		display:none;
+		position:static;
+	}
+	#alert-select {
+		display:none;
+	}
+	.games {
+		margin-left:30px;
+	}
+	#start-farkle {
+		width:100%;
+		display:none;
+	}
+	#players {
+		display:none;
+	}
+	#farkle-title {
+		display:none;
+	}
+	#player-list {
+		border:1px solid grey;
+		margin-top: 120px;
+		display:none;
+	}
+	.player-score {
+		margin-bottom:10px;
+		display:none;
+		margin-left:30px;
+	}
+	.player-turn {
+		margin-left:-30px;
+		color:red;
+		display:none;
+	}
+	#player-turn-1 {
+		display:inline-block;
+	}
+	.name-input {
+		margin-bottom:20px;
+		display:none;
+	}
+	#bar-graph {
+		margin-left:30px;
+		display:none;
+	}
+	#end {
+		margin-top:20px;
+		display:none;
+	}
+	#score {
+		font-size: 150%;
+		display:none;
+	}
+	.table-label {
+		font-weight: bold;
+		text-align: center;
+		padding-bottom:10px;
+		font-size: 1.2em;
+		border-top: 1px solid #E5E5E5;
+		width:100%;
+		padding-top:10px;
+	}
+	#end-modal-title {
+		text-align: center;
+	}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<div id="player-list">
+					<h1>Players</h1>
+					<h2 class="player-score" id="player-1"> <span id="player-turn-1" class="glyphicon glyphicon-asterisk player-turn"></span> <span id="player-1-name-label">Player 1</span>: <span id="player-1-score">0</span></h2>
+					<h2 class="player-score" id="player-2"> <span id="player-turn-2" class="glyphicon glyphicon-asterisk player-turn"></span> <span id="player-2-name-label">Player 2</span>: <span id="player-2-score">0</span></h2>
+					<h2 class="player-score" id="player-3"> <span id="player-turn-3" class="glyphicon glyphicon-asterisk player-turn"></span> <span id="player-3-name-label">Player 3</span>: <span id="player-3-score">0</span></h2>
+					<h2 class="player-score" id="player-4"> <span id="player-turn-4" class="glyphicon glyphicon-asterisk player-turn"></span> <span id="player-4-name-label">Player 4</span>: <span id="player-4-score">0</span></h2>
+					<h2 class="player-score" id="player-5"> <span id="player-turn-5" class="glyphicon glyphicon-asterisk player-turn"></span> <span id="player-5-name-label">Player 5</span>: <span id="player-5-score">0</span></h2>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<h1 id="title">Dice Roller</h1>
+				<h1 id="farkle-title">Farkle<a href="http://howdoyouplayit.com/farkle-dice-game-rules/" target="_blank">(?)</a></h1>
+				
+				<span class="dice" id="dice">Number of Dice: 1</span>
+				<br />
+				<span class="dice" id="rolls">Number of Rolls: 1</span>
+				<br />
+				<span class="dice" id="total-rolls">Total Number of Dice Rolled: 1</span>
+
+				<button class="btn btn-success btn-lg roll-button" id="roll">Roll Dice</button>
+				<button class="btn btn-primary btn-lg roll-button" id="farkle">Roll Dice (Farkle)</button>
+				<button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#settings" id="settings-button" data-backdrop="static">Settings</button>
+				<div class="alert alert-danger" role="alert" id="alert-select">
+ 					<strong>Alert</strong> You have to select atleast one die
+				</div>
+				<div id="result">
+					<p class="dice-info" id="rolled">Roll:</p>
+					<p class="dice-info" id="average">Average:</p>
+				</div>
+				<div id="farkle-result-container">
+					<div class="farkle-result" id="f-1"></div>
+					<div class="farkle-result" id="f-2"></div>
+					<div class="farkle-result" id="f-3"></div>
+					<div class="farkle-result" id="f-4"></div>
+					<div class="farkle-result" id="f-5"></div>
+					<div class="farkle-result" id="f-6"></div>
+				</div>
+
+				<br />
+
+				<button class="btn btn-success" id="select">Selcet Dice</button>
+
+				<button class="btn btn-warning" id="end">End Turn</button>
+
+				<button class="btn btn-primary btn-lg" id="end-button" data-target="#end-modal" data-toggle="modal">End Game</button>
+
+				<p id="score">Score: <span id="temp-score"></span></p>
+
+				<div class="form-group" id="players">
+					<label for="players">Number of Players:</label>
+					<select name ="players" class="form-control" id="number-players">
+						<option value="2" class="options">2</option>
+						<option value="3" class="options">3</option>
+						<option value="4" class="options">4</option>
+						<option value="5" class="options">5</option>
+					</select>
+				</div>
+
+				<div class="form-group name-input" id="player-1-name-div">
+					<label for="player-1-name">Player 1's Name</label>
+					<input class="form-control" type="text" placeholder="Player 1's Name" name="player-1-name" id="player-1-name" />
+				</div>
+
+				<div class="form-group name-input" id="player-2-name-div">
+					<label for="player-2-name">Player 2's Name</label>
+					<input class="form-control" type="text" placeholder="Player 2's Name" name="player-2-name" id="player-2-name" />
+				</div>
+
+				<div class="form-group name-input" id="player-3-name-div">
+					<label for="player-3-name">Player 3's Name</label>
+					<input class="form-control" type="text" placeholder="Player 3's Name" name="player-3-name" id="player-3-name" />
+				</div>
+
+				<div class="form-group name-input" id="player-4-name-div">
+					<label for="player-4-name">Player 4's Name</label>
+					<input class="form-control" type="text" placeholder="Player 4's Name" name="player-4-name" id="player-4-name" />
+				</div>
+
+				<div class="form-group name-input" id="player-5-name-div">
+					<label for="player-5-name">Player 5's Name</label>
+					<input class="form-control" type="text" placeholder="Player 5's Name" name="player-5-name" id="player-5-name" />
+				</div>
+
+				<button class="btn btn-success btn-lg" id="start-farkle">Start Game</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div  id="stats">
+					<table class="table table-striped" id="stat-table">
+						<tr>
+							<th>#</th>
+							<th>Times Rolled</th>
+						</tr>
+					</table>
+					<div class="alert alert-danger" role="alert" id="alert-stats">
+ 					<strong>Alert</strong> Statistics not avalible for more than 5 dice
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  		<div class="modal-dialog" role="document">
+    		<div class="modal-content">
+     			<div class="modal-header">
+        			<h4 class="modal-title" id="myModalLabel">Settings</h4>
+      			</div>
+      			<div class="modal-body">
+      				<div class="checkbox">
+    					<label>
+     	 					<input type="checkbox" id="multiple-dice"> Roll Multiple Dice?
+    					</label>
+  					</div>
+  					<div class="checkbox">
+    					<label>
+     	 					<input type="checkbox" id="multiple-rolls"> Roll Dice Multiple Times?
+    					</label>
+  					</div>
+  					<div class="checkbox">
+    					<label>
+     	 					<input type="checkbox" id="stats-checkbox"> Show Statistics?
+    					</label>
+  					</div>
+  					<div class="checkbox" id="bar-graph">
+    					<label>
+     	 					<input type="checkbox" id="bar-graph-checkbox"> Use Bar Graph?
+    					</label>
+  					</div>
+  					<div class="alert alert-danger" role="alert" id="alert">
+ 						Please Enter Numerical Values
+					</div>
+        			<div class="form-group" id="num-dice-div">
+						<label for="num-dice">Number of Dice</label>
+						<input class="form-control" type="text" placeholder="Number of Dice" id="num-dice" name="num-dice" value="1">
+					</div>
+					<div class="form-group" id="num-rolls-div">
+						<label for="num-rolls">Number of Rolls</label>
+						<input class="form-control" type="text" placeholder="Number of Rolls" id="num-rolls" name="num-rolls" value="1">
+					</div>
+					<div class="checkbox">
+    					<label>
+     	 					<input type="checkbox" id="games-checkbox"> Show Game Settups
+    					</label>
+  					</div>
+					<div class="checkbox games" id="catan-checkbox-div">
+    					<label>
+     	 					<input type="checkbox" id="catan-checkbox"> Catan Settup
+    					</label>
+  					</div>
+  					<div class="checkbox games" id="catan-checkbox-div">
+    					<label>
+     	 					<input type="checkbox" id="farkle-checkbox"> Farkle Settup
+    					</label>
+  					</div>
+      			</div>
+      			<div class="modal-footer">
+        			<button class="btn btn-danger" id="reset">Reset</button>
+        			<button class="btn btn-success" data-dismiss="modal" id="set">Save</button>
+      			</div>
+    		</div>
+  		</div>
+	</div>
+
+	<div class="modal fade" id="end-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="end-modal-title">Game Stats</h4>
+				</div>
+				<div class="modal-body">
+					<div class="table-label">Results</div>
+					<table class="table table-striped" id="scores-table">
+						<tr>
+							<th>Place</th>
+							<th>Name</th>
+							<th>Score</th>
+						</tr>
+					</table>
+
+					<div class="table-label">Dice Combos Rolled</div>
+
+					<table class="table table-striped" id="combos-1">
+						<tr>
+							<th>Name</th>
+							<th>3 of a Kind</th>
+							<th>4 of a Kind</th>
+							<th>5 of a Kind</th>
+							<th>6 of a Kind</th>
+						</tr>
+					</table>
+
+					<table class="table table-striped" id="combos-2">
+						<tr>
+							<th>Name</th>
+							<th>2 Tripples</th>
+							<th>3 Pairs</th>
+							<th>Straight</th>
+							<th>4 and 2</th>
+							<th>5's</th>
+							<th>1's</th>
+						</tr>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-success">Play Again</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		$(document).ready(function(){
+    		$('[data-toggle="tooltip"]').tooltip(); 
+		});
+
+		$('#set').click(function() {
+			if(!($.isNumeric($('#num-dice').val()))|| !($.isNumeric($('#num-rolls').val()))) {
+				console.log("Not Numerical");
+				$('#alert').show();
+				return false;
+			}
+			if($.isNumeric($('#num-dice').val())&& $.isNumeric($('#num-rolls').val())) {
+				console.log("Numerical");
+				$('#alert').hide();
+				$('#alert-saved').hide();
+				$('#dice').html("Number of Dice: " + $('#num-dice').val());
+				$('#rolls').html("Number of Rolls: " + $('#num-rolls').val());	
+			}
+		});
+
+		$('#reset').click(function() {
+			$('#alert').hide();
+			$('#dice').html("Number of Dice: 1");
+			$('#rolls').html("Number of Rolls: 1");
+			$('#num-dice').val('1');
+			$('#num-rolls').val('1');
+			$('#multiple-dice').prop('checked', false);
+			$('#multiple-rolls').prop('checked', false);
+			$('#stats-checkbox').prop('checked', false);
+			$('#dice').hide();
+			$('#rolls').hide();
+			$('#stats').hide();
+			$('#average').hide();
+			$('#num-dice-div').hide();
+			$('#num-rolls-div').hide();
+			$('#farkle').hide();
+			$('#farkle-result-container').hide();
+			$('#select').hide();
+			$('#roll').show();
+			$('#result').show();
+			$('#games-checkbox').prop('checked', false);
+			$('#farkle-checkbox').prop('checked', false);
+			$('.games').hide();
+		});
+
+		$('#multiple-dice').click(function() {
+			multipleDice();
+		});
+
+		function multipleDice() {
+			$('#num-dice-div').toggle();
+			$('#dice').toggle();
+		}
+
+		$('#multiple-rolls').click(function() {
+			multipleRolls();
+		});
+
+		function multipleRolls() {
+			$('#num-rolls-div').toggle();
+			$('#rolls').toggle();
+			$('#average').toggle();
+		}
+
+		$('#stats-checkbox').click(function() {
+			showStatsFunction();
+			$('#bar-graph').toggle();
+			$('#bar-graph-checkbox').prop('checked', true);
+		});
+
+		var tableActive = false;
+
+		function showStatsFunction() {
+			$('#stats').toggle();
+			if($('#num-dice').val()>5) {
+				$('#alert-stats').show();
+				$('#stat-table').hide();
+			} else {
+				$('#alert-stats').hide();
+				$('#stat-table').show();
+				for(var i = 1; i < ($('#num-dice').val()*6)+1; i++) {
+					if(tableActive==false) {
+						$('#stat-table tr:last').after('<tr id=row-'+i+'><td>'+ i + '</td><td id=times-' + i + '>' + '</td></tr>');
+					}
+					
+				}
+			}
+			tableActive = true;
+		}
+
+		$('#catan-checkbox').click(function() {
+			gameSettings(2, 1, true, true, false, "");
+		});
+
+		$('#farkle-checkbox').click(function() {
+			$('#players').toggle();
+			$('#start-farkle').toggle();
+			$('#roll').toggle();
+			$('#result').toggle();
+			$('#settings-button').toggle();
+			$('#title').toggle();
+			$('#farkle-title').toggle();
+			$('#player-1-name-div').toggle();
+			$('#player-2-name-div').toggle();
+		});
+
+		$('#start-farkle').click(function() {
+			gameSettings(0, 0, false, false, true, "farkle");
+			$('#roll').hide();
+			$('#players').hide();
+			$(this).hide();
+			$('#farkle-result-container').show();
+			$('#player-list').show();
+			$('#settings-button').show();
+
+			for (var i = 1; i <= $('#number-players').val(); i++) {
+				$('#player-' + i).show();
+			}
+			for(var c = 1; c <= 6; c++) {
+				if($('#player-' + c + '-name').val()) {
+					$('#player-'+ c + '-name-label').text($('#player-' + c + '-name').val());
+				}
+			}
+			
+			$('.name-input').hide();
+		});
+
+		$('#games-checkbox').click(function() {
+			$('.games').toggle();
+		});
+
+		function gameSettings(numDice, numRolls, showStats, showSettings, customRoll, customRollId) {
+			$('#num-dice').val(numDice);
+			$('#num-rolls').val(numRolls);
+			if(showStats) {
+				showStatsFunction();
+				if($('#stats-checkbox').prop('checked') == true) {
+					$('#stats-checkbox').prop('checked', false);
+				} else {
+					$('#stats-checkbox').prop('checked', true);
+				}
+				
+			}
+			if(showSettings) {
+				multipleDice();
+				if($('#multiple-dice').prop('checked') == false) {
+					$('#multiple-dice').prop('checked', true);
+				} else {
+					$('#multiple-dice').prop('checked', false);
+				}
+				
+				if(numRolls>1) {
+					multipleRolls();
+					if($('#multiple-rolls').prop('checked')==false) {
+						$('#multiple-rolls').prop('checked', true);
+					} else {
+						$('#multiple-rolls').prop('checked', true);
+					}
+					
+				}
+			}
+			if(customRoll) {
+				$('#roll').toggle();
+				$('#' + customRollId).toggle();
+			}
+		}
+
+		var counter = 0;
+		var numbersRolled = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+		$('#roll').click(function() {
+			
+			var totalNumber = 0;
+			var rolledNumber = 0;
+			
+
+			
+				for(var i = 0; i<$('#num-rolls').val(); i++) {
+					rolledNumber = 0;
+					for(var q = 0; q < $('#num-dice').val(); q++) {
+						var roll = Math.floor((Math.random()*6)+1);
+						rolledNumber = rolledNumber + roll;
+						
+						counter++;
+					}
+					numbersRolled[rolledNumber-1]++;
+					var bars = "";
+					for(var x = 1; x <= numbersRolled[rolledNumber-1]; x++) {
+						bars = bars + '|'; 
+					}
+					if($('#bar-graph-checkbox').prop('checked')==true) {
+						$('#times-' + rolledNumber).html(bars);
+					} else {
+						$('#times-' + rolledNumber).html(numbersRolled[rolledNumber-1]);
+					}
+					
+					totalNumber = totalNumber +rolledNumber;
+				}
+				$('#average').html("Average: " + (totalNumber/$('#num-rolls').val()));
+				$('#rolled').html("Roll: " + (totalNumber));
+
+			console.log(numbersRolled);
+
+			if($('#num-dice').val()>5) {
+				$('#alert-stats').show();
+				$('#stat-table').hide();
+			} else {
+				$('#alert-stats').hide();
+				$('#stat-table').show();
+			}
+
+			$('#total-rolls').show();
+
+			$('#total-rolls').html('Total Number of Dice Rolled: ' + counter);
+
+		});	
+		
+		var nonSelectedNumbers = [0, 0, 0, 0, 0, 0];
+
+		$('#farkle').click(function() {
+			nonSelectedNumbers = [0, 0, 0, 0, 0, 0];
+			for(var f = 1; f <= 6; f++) {
+				if(!($('#f-' + f).css('border')=="1px solid rgb(255, 0, 0)")) {
+					$('#f-' + f).html(Math.floor(Math.random() *6) + 1);
+					nonSelectedNumbers[parseInt($('#f-' + f).html())-1]++;
+				}
+			}
+			$('#select').show();
+			$(this).prop('disabled', true);
+			$('#end').hide();
+
+			console.log(nonSelectedNumbers);
+
+			score5 = 0;
+			score1= 0;
+			scoreXOfKind = 0;
+			straightScore = 0;
+			score2Tripples = 0;
+			score3Pairs = 0;
+			scoreFullHouse = 0;
+
+			check2Tripples(nonSelectedNumbers, false);
+			check3Pairs(nonSelectedNumbers, false);
+			checkFullHouse(nonSelectedNumbers, false);
+			checkStraight(nonSelectedNumbers, false);
+			check5(nonSelectedNumbers, false);
+			check1(nonSelectedNumbers, false);	
+			checkXofKind(nonSelectedNumbers, false);
+
+			if((score5 + score1 + scoreXOfKind + straightScore + score3Pairs + score2Tripples + scoreFullHouse)==0) {
+				alert('You Farkled');
+				farkle();
+			}
+		});
+
+		$('.farkle-result').click(function() {
+			if($(this).css("border")=="1px solid rgb(128, 128, 128)" && $(this).css("margin-top") != "150px" && $('#farkle').prop('disabled') == true) {
+				$(this).css({"border": "1px solid red"});
+				$(this).addClass('red');
+			} else if (($(this).css("margin-top") != "150px")){
+				$(this).css({"border": "1px solid grey"});
+				$(this).removeClass('red');
+			}
+		});
+
+		$('#select').click(function() {
+
+			var selectedNumbers = [0, 0, 0, 0, 0, 0];
+			var numbers = [];
+			console.log($('.red').length);
+			if($('.red').length!=0) {
+				for(var d = 1; d <= 6; d++) {
+					if($('#f-' + d).css("border")=="1px solid rgb(255, 0, 0)" &&  $('#f-' + d).css('marginTop')!= '150px') {
+						$('#f-' + d).animate({"marginTop": '150'});
+						selectedNumbers[parseInt($('#f-' + d).text())-1]++;
+						numbers[d-1] = parseInt($('#f-' + d).text());
+					}
+				}
+			$('#select').hide();
+			$('#farkle').prop('disabled', false);
+			$('#alert-select').hide();
+			$('#end').show();
+			$('#score').show();
+			} else {
+				$('#alert-select').show();
+			}
+			
+
+			console.log(selectedNumbers);
+
+			score(selectedNumbers);
+
+			console.log(selectedNumbers);
+
+			console.log('-------------------------------------------------------------');
+
+			for (var i = 0; i < 6; i++) {
+				if(selectedNumbers[i] != 0) {
+					for(var x = 0; x < 6; x++) {
+						if(numbers[x] == i+1) {
+							$('#f-' + (x+1)).animate({'marginTop': '0'});
+							$('#f-' + (x+1)).css({"border": "1px solid grey"});
+							$('.farkle-result').removeClass('red');
+							$('#farkle').prop('disabled', false);
+						}
+					}
+					
+				}
+			}
+
+			if($('.red').length == 6) {
+				$('.farkle-result').css({"marginTop": "0px", "border": "1px solid rgb(128, 128, 128)"});
+				$('.farkle-result').text("");
+				$('.farkle-result').removeClass('red');
+				$('.farkle-result').animate({'marginTop': '0'});
+			}
+
+		});
+
+		var score1 = 0;
+		var score5 = 0;
+		var scoreXOfKind = 0;
+		var straightScore = 0;
+		var score3Pairs = 0;
+		var score2Tripples = 0;
+		var scoreFullHouse = 0;
+		var tempScore = 0;
+
+		var threeOfKindArray = [0, 0, 0, 0, 0];
+		var fourOfKindArray = [0, 0, 0, 0, 0];
+		var fiveOfKindArray = [0, 0, 0, 0, 0];
+		var sixOfKindArray = [0, 0, 0, 0, 0];
+
+		var twoTripplesArray = [0, 0, 0, 0, 0];
+		var threePairsArray = [0, 0, 0, 0, 0];
+		var straightArray = [0, 0, 0, 0, 0];
+		var fullHouseArray = [0, 0, 0, 0, 0];
+
+		var fiveArray = [0, 0, 0, 0, 0];
+		var oneArray = [0, 0, 0, 0, 0];
+
+		var scoreOrder = [];
+		var playerScores = [];
+
+		function score(array) {
+			$('#end').prop('disabled', false);
+
+			score5 = 0;
+			score1= 0;
+			scoreXOfKind = 0;
+			straightScore = 0;
+			score2Tripples = 0;
+			score3Pairs = 0;
+			scoreFullHouse = 0;
+
+			check2Tripples(array, true);
+			check3Pairs(array, true);
+			checkFullHouse(array, true);
+			checkStraight(array, true);
+			checkXofKind(array, true);
+			check5(array, true);
+			check1(array, true);	
+			
+
+			tempScore = score5 + score1 + scoreXOfKind + straightScore + score3Pairs + score2Tripples + scoreFullHouse + tempScore;
+			checkOpen(tempScore);
+			console.log(tempScore);
+
+			$('#temp-score').text(tempScore);
+			
+			for(var i = 0; i>array.length; i++) {
+				delete array[i];
+			}
+
+		}
+
+		function check5(array, score) {
+			if(array[4] < 3) {
+				score5 = array[4] * 50;
+				if(score) {
+					fiveArray[playerTurn-1] = fiveArray[playerTurn-1] + array[4];
+				}		
+				array[4] = 0;
+			}
+			console.log("Points from 5's: " + score5);
+			console.log(fiveArray);
+			return score5;
+		}
+
+		function check1(array, score) {
+			if(array[0] < 3) {
+				score1 = array[0] * 100;
+				if(score) {
+					oneArray[playerTurn-1] = oneArray[playerTurn-1] + array[0];
+				}
+				array[0] = 0;
+			}
+			console.log("Points from 1's: " + score1);
+			return score1;
+		}
+		
+		function checkXofKind(array, score) {
+				
+			for(var i = 0; i <= 6; i++) {
+				if(scoreXOfKind == 0) {
+					switch(array[i]) {
+						case 0:
+							scoreXOfKind = 0;
+							break;
+						case 1:
+							scoreXOfKind = 0;
+							break;
+						case 2:
+							scoreXOfKind = 0;
+							break;
+						case 3:
+							if(i == 0) {
+								scoreXOfKind = 300;
+							} else {
+								scoreXOfKind = (i+1) * 100;
+							}
+							
+							if(score) {
+								threeOfKindArray[playerTurn-1]++;
+							}
+							array[i] = 0;
+							break;
+						case 4:
+							scoreXOfKind = 1000;
+							if(score) {
+								fourOfKindArray[playerTurn-1]++;
+							}
+							array[i] = 0;
+							break;
+						case 5:
+							scoreXOfKind = 2000;
+							if(score) {
+								fiveOfKindArray[playerTurn-1]++;
+							}
+							array[i] = 0;
+							break;
+						case 6:
+							scoreXOfKind = 3000;
+							if(score) {
+								sixOfKindArray[playerTurn-1]++;
+							}
+							array[i] = 0;
+							break;			
+					}
+				}
+				
+			}
+			
+			console.log('Points from X of a kind: ' + scoreXOfKind);
+			return scoreXOfKind;
+		}
+
+		function checkStraight(array, score) {
+			var straight = true;
+			for (var i = 0; i < 6; i++) {
+				if(array[i] != 1) {
+					straight = false;
+				}
+			}
+			if(straight) {
+				straightScore = 1500;
+				if(score) {
+					straightArray[playerTurn-1]++;
+				}
+				array[0] = 0; array[1] = 0; array[2] = 0; array[3] = 0; array[4] = 0; array[5] = 0;
+				console.log(array);
+			}
+			console.log('Points From Straight: ' + straightScore);
+			return straightScore;
+		}
+
+		function check3Pairs(array, score) {
+			var numberPairs = 0;
+			for(var i = 0; i < 6; i++) {
+				if(array[i] == 2) {
+					numberPairs++;
+				}
+			}
+			if(numberPairs == 3) {
+				score3Pairs = 1500;
+				if(score) {
+					threePairsArray[playerTurn-1]++;
+				}
+				array[0] = 0; array[1] = 0; array[2] = 0; array[3] = 0; array[4] = 0; array[5] = 0;
+			}
+			console.log('Points From 3 Pairs ' + score3Pairs);
+			
+			return score3Pairs;
+		}
+
+		function check2Tripples(array, score) {
+			var numberTripples = 0;
+			for(var i = 0; i < 6; i++) {
+				if(array[i] == 3) {
+					numberTripples++;
+				}
+			}
+			if(numberTripples == 2) {
+				score2Tripples = 2500;
+				if(score) {
+					twoTripplesArray[playerTurn-1]++;
+				}
+				array[0] = 0; array[1] = 0; array[2] = 0; array[3] = 0; array[4] = 0; array[5] = 0;
+			}
+			console.log('Points From 2 Tripples ' + score2Tripples);
+			
+			return score2Tripples;
+		}
+
+		function checkFullHouse(array, score) {
+			var four = false;
+			var two = false;
+
+			for (var i = 0; i < 6; i++) {
+				if(array[i] == 2) {
+					two = true;
+				}
+				if(array[i] == 4) {
+					four = true;
+				}
+			}
+
+			if(two && four) {
+				scoreFullHouse = 1500;
+				if(score) {
+					fullHouseArray[playerTurn-1]++;
+				}
+				array[0] = 0; array[1] = 0; array[2] = 0; array[3] = 0; array[4] = 0; array[5] = 0;
+			}
+			console.log('Points From Full House ' + scoreFullHouse);
+			return scoreFullHouse;
+		}
+
+		$('#number-players').change(function() {
+			$('.name-input').hide();
+			var numPlayers = 2;
+			numPlayers = $(this).val();
+			for (var i = 1; i <= numPlayers; i++) {
+				$('#player-' + i + '-name-div').show();
+			}
+		});
+		var playerTurn = 1;
+		var winCounter = 0;
+		$('#end').click(function() {
+
+			if(playerOpen[playerTurn]==1) {
+
+				$('.farkle-result').css({"marginTop": "0px", "border": "1px solid rgb(128, 128, 128)"});
+				$('.farkle-result').text("");
+				$('.farkle-result').removeClass('red');
+				$(this).hide();
+				$('#player-turn-' + playerTurn).hide();
+				var playerScore = parseInt($('#player-' + playerTurn + '-score').text());
+				$('#player-' + playerTurn + '-score').text(tempScore + playerScore);
+				if($('#player-' + (playerTurn+1)).css("display")!="block") {
+					playerTurn = 1;
+				} else {
+					playerTurn++;
+				}
+				$('#player-turn-' + playerTurn).show();
+				tempScore = 0;
+				$('#temp-score').text("");
+				$('#farkle').prop('disabled', false);
+			}
+
+			
+			var winCounterActive = false;
+			for (var i = 1; i <= 6; i++) {
+				if($('#player-' + i + '-score').text() >= 600) {
+					console.log('win counter started');
+					winCounterActive = true;
+					
+				}
+			}
+
+			if(winCounterActive) {
+				winCounter++;
+				console.log('win counter: ' + winCounter);
+			}
+			if(winCounter == ($('#number-players').val()-1)) {
+				if(playerTurn == 1) {
+					alert('Player ' + ($('#number-players').val()) + ' Wins!');
+					end();
+				}else {
+					alert('Player ' + (playerTurn + 1) + ' Wins!')
+				}
+						
+			}
+		});
+		var playerOpen = [0, 0, 0, 0, 0];
+		function checkOpen(score) {
+			console.log('Player ' + playerTurn + 's Turn');
+			if(tempScore >= 0) {
+				playerOpen[playerTurn] = 1;
+			} else if(playerOpen[playerTurn] != 1) {
+				$('#end').prop('disabled', true);
+			}
+			console.log('Players Open' + playerOpen);
+		}
+
+		function farkle() {
+			$('.farkle-result').css({"marginTop": "0px", "border": "1px solid rgb(128, 128, 128)"});
+			$('.farkle-result').text("");
+			$('.farkle-result').removeClass('red');
+			$('#player-turn-' + playerTurn).hide();
+			if($('#player-' + (playerTurn+1)).css("display")!="block") {
+					playerTurn = 1;
+				} else {
+					playerTurn++;
+				}
+				$('#player-turn-' + playerTurn).show();
+				tempScore = 0;
+				$('#temp-score').text("");
+				$('#farkle').prop('disabled', false);
+		}	
+
+		function end() {
+			for(var i = 0; i <= $('#number-players').val(); i++) {
+
+			}
+			orderPlayers();
+		}
+
+		$('#end-button').click(function() {
+			end();
+		});
+
+		function orderPlayers() {
+			for(var i = 1; i <= $('#number-players').val(); i++) {
+				playerScores.push($('#player-' + i + '-score').text());
+			}
+			console.log(playerScores);
+
+			playerScores.sort(function(a, b){return b-a});
+
+			console.log(playerScores);
+
+			for(var y = 0; y <= 6; y++) {
+				hit = false;
+				for(var x = 1; x <= $('#number-players').val(); x++) {
+					if(playerScores[y] == $('#player-' + x + '-score').text()) {
+						scoreOrder.push(x);
+					}
+				}
+			}
+			console.log(scoreOrder);
+
+			for(var i = 0; i < $('#number-players').val(); i++) {
+
+					$('#scores-table tr:last').after('<tr><td>'+ (i+1) + '</td><td>' + $('#player-' + scoreOrder[i] + '-name-label').text() + '</td><td>' + $('#player-' + scoreOrder[i] + '-score').text() + '</td></tr>');
+
+ 					$('#combos-1 tr:last').after('<tr><td>'+ $('#player-' + scoreOrder[i] + '-name-label').text() + '</td><td>' + threeOfKindArray[scoreOrder[i]-1] + '</td><td>' + fourOfKindArray[scoreOrder[i]-1] + '</td><td>' + fiveOfKindArray[scoreOrder[i]-1] + '</td><td>' + sixOfKindArray[scoreOrder[i]-1] + '</td></tr>');
+
+ 					$('#combos-2 tr:last').after('<tr><td>'+ $('#player-' + scoreOrder[i] + '-name-label').text() + '</td><td>' + twoTripplesArray[scoreOrder[i]-1] + '</td><td>' + threePairsArray[scoreOrder[i]-1] + '</td><td>' + straightArray[scoreOrder[i]-1] + '</td><td>' + fullHouseArray[scoreOrder[i]-1] + '</td><td>' + fiveArray[scoreOrder[i]-1] + '</td><td>' + oneArray[scoreOrder[i]-1] + '</td></tr>');
+			}
+			
+		}
+	</script>
+</body>
+</html>
